@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -9,8 +9,8 @@ README_FILEPATH=${README_FILEPATH:="./README.md"}
 echo "Acquiring token"
 LOGIN_PAYLOAD="{\"username\": \"${DOCKERHUB_USERNAME}\", \"password\": \"${DOCKERHUB_PASSWORD}\"}"
 OUTPUT=$(curl -s -H "Content-Type: application/json" -X POST -d "${LOGIN_PAYLOAD}" https://hub.docker.com/v2/users/login/)
-if ! TOKEN=$(jq -e -r .token <<< "${OUTPUT}"); then
-  echo "Failed: $(jq -e -r .detail <<< "${OUTPUT}")"
+if ! TOKEN=$(echo "${OUTPUT}" | jq -e -r .token); then
+  echo "Failed: $(echo "${OUTPUT}" | jq -e -r .detail)"
   exit 1
 fi
 
